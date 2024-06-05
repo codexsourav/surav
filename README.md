@@ -46,7 +46,7 @@ To use the `ApiRequest` and `SuravLocal` classes, you need to include the follow
 
 ```yaml
 dependencies:
-  surav: ^1.0.0
+  surav: ^1.0.2+2
   flutter:
     sdk: flutter
 ```
