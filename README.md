@@ -33,6 +33,12 @@ This guide provides an overview of how to use the `ApiRequest` class and the `Su
   - [BuildContext Extensions](#buildcontext-extensions)
     - [windowWidth](#windowwidth)
     - [windowHeight](#windowheight)
+- [Toast Utility](#toast-utility)
+  - [showToast](#showtoast)
+  - [Navigation](#navigation)
+  - [Initialization](#initialization)
+  - [Showing Snackbars](#showing-snackbars)
+
 
 ## Installation
 
@@ -267,3 +273,192 @@ Gets the height of the window.
 ```dart
 double height = context.windowHeight;
 ```
+
+
+## Toast Utility
+
+### showToast
+
+Displays a toast message on the screen.
+
+```dart
+void showToast(
+  String msg, {
+  Toast toastLength = Toast.LENGTH_SHORT,
+  ToastGravity gravity = ToastGravity.BOTTOM,
+  int timeInSecForIosWeb = 1,
+  Color backgroundColor = Colors.black,
+  Color textColor = Colors.white,
+  double fontSize = 16.0,
+}) {
+  Fluttertoast.cancel();
+  Fluttertoast.showToast(
+    msg: msg,
+    toastLength: toastLength,
+    gravity: gravity,
+    timeInSecForIosWeb: timeInSecForIosWeb,
+    backgroundColor: backgroundColor,
+    textColor: textColor,
+    fontSize: fontSize,
+  );
+}
+```
+
+## Example
+
+Here's a complete example demonstrating how to use
+
+```dart
+  ElevatedButton(
+        onPressed: () => showToast('This is a toast message'),
+        child: Text('Show Toast'),
+    ),
+```
+
+
+
+## Introduction
+
+The `SuravNavigate` class provides global keys for managing navigation and snackbars within a Flutter application. It simplifies the process of navigating between screens and displaying snackbars from anywhere in the application.
+
+### Initialization
+
+First, you need to initialize the `SuravNavigate` class in your `MaterialApp` widget. This ensures that the global keys are properly set up for managing navigation and snackbars.
+
+```dart
+import 'package:flutter/material.dart';
+import 'surav_navigate.dart'; // Ensure this file includes the provided SuravNavigate class
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      navigatorKey: SuravNavigate.navigateKey,
+      scaffoldMessengerKey: SuravNavigate.snackbarKey,
+      home: HomeScreen(),
+    );
+  }
+}
+```
+
+### Navigation
+
+To navigate to a new screen, you can use the `navigate` global instance. This allows you to perform navigation operations from anywhere in your code.
+
+```dart
+NavigatorState navigate = SuravNavigate.navigateKey.currentState!;
+
+void navigateToScreen(Widget screen) {
+  navigate.push(routeMe(screen));
+}
+```
+
+### Showing Snackbars
+
+To show a snackbar, you can use the `snackbarKey` to get the current `ScaffoldMessengerState`.
+
+```dart
+void showSnackbar(String message) {
+  SuravNavigate.snackbarKey.currentState!.showSnackBar(
+    SnackBar(content: Text(message)),
+  );
+}
+```
+
+### Utility Function
+
+The `routeMe` function is a utility that creates a `MaterialPageRoute` for a given screen.
+
+```dart
+MaterialPageRoute routeMe(Widget screen) {
+  return MaterialPageRoute(builder: (context) {
+    return screen;
+  });
+}
+```
+
+## Example
+
+Here's a complete example demonstrating how to use the `SuravNavigate` class and its related utilities in a Flutter application:
+
+```dart
+import 'package:flutter/material.dart';
+import 'surav_navigate.dart'; // Ensure this file includes the provided SuravNavigate class
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      navigatorKey: SuravNavigate.navigateKey,
+      scaffoldMessengerKey: SuravNavigate.snackbarKey,
+      home: HomeScreen(),
+    );
+  }
+}
+
+class HomeScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Home Screen')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                navigateToScreen(SecondScreen());
+              },
+              child: Text('Navigate to Second Screen'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                showSnackbar('This is a snackbar message');
+              },
+              child: Text('Show Snackbar'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class SecondScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Second Screen')),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            navigate.pop();
+          },
+          child: Text('Go Back'),
+        ),
+      ),
+    );
+  }
+}
+
+void navigateToScreen(Widget screen) {
+  NavigatorState navigate = SuravNavigate.navigateKey.currentState!;
+  navigate.push(routeMe(screen));
+}
+
+void showSnackbar(String message) {
+  SuravNavigate.snackbarKey.currentState!.showSnackBar(
+    SnackBar(content: Text(message)),
+  );
+}
+```
+
+Make sure to save the provided `SuravNavigate` class in a file (e.g., `surav_navigate.dart`) and import it in your main file as shown in the example. This will enable you to utilize the navigation and snackbar functionalities across your Flutter application.
